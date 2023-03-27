@@ -9,7 +9,7 @@ using namespace std;
 using namespace ariel;
 
 
-TEST_CASE("Test 1 - Initialization") {
+TEST_CASE("Test 1 - check stacksize and cardesTaken ") {
     Player p1("Alice");
     Player p2("Bob");
 
@@ -20,10 +20,15 @@ TEST_CASE("Test 1 - Initialization") {
     CHECK(p1.cardesTaken() == 0);
     CHECK(p2.cardesTaken() == 0);
     game.playTurn();
-    CHECK((p1.cardesTaken()==0 ||p1.cardesTaken()==1 || p1.cardesTaken()==20)); // lost,won or draw
+    // after playing one turn:
+    CHECK((p1.cardesTaken()==0 ||p1.cardesTaken()==2 || p1.cardesTaken()==6)); // lost,won or draw and won
+    CHECK((p2.cardesTaken()==0 ||p2.cardesTaken()==2 || p1.cardesTaken()==6)); // lost,won or draw and won
+    CHECK((p1.stacksize()== 25 || p1.stacksize()== 23)); // regular turn or a draw turn
+    CHECK((p2.stacksize()== 25 || p2.stacksize()== 23)); // regular turn or a draw turn
+    
     CHECK_NOTHROW(game.playAll());
-
-    CHECK((p1.stacksize() == 0 || p2.stacksize() == 0 )); // one of them should be 0 so the game will stop
+    // when the game is over , both players don't have any cards left.
+    CHECK((p1.stacksize() ==0 &&p2.stacksize()==0));
 }
 
 TEST_CASE("check Player constructor"){
@@ -46,64 +51,49 @@ TEST_CASE("check Game constructor"){
 
 }
 
-TEST_CASE("check playAll,printWiner functions "){ // exceptions?
+TEST_CASE("check print functions when game didn't start "){ 
     Player p1("Alice");
     Player p2("Bob");
     Game game(p1,p2); 
-    CHECK_THROWS(game.playTurn());
-    CHECK_NOTHROW(game.playAll());
-    CHECK_NOTHROW(game.printLastTurn());
-    CHECK_NOTHROW(game.printStats());
-    CHECK_NOTHROW(game.printLog());
-    CHECK_NOTHROW(game.printWiner());
-    // if(p1.cardesTaken()==p2.cardesTaken())
-    // {
-    //     return (void)"Doesn't Print";
-    // }
-
+    //CHECK_THROWS(game.playTurn());
+    // no turn was played - the game didn't start - throw exceptions
+    CHECK_THROWS(game.printLastTurn());
+    CHECK_THROWS(game.printStats());
+    CHECK_THROWS(game.printLog());
+    CHECK_THROWS(game.printWiner());
 
 }
 
 
-TEST_CASE("check printTurn function "){
+TEST_CASE("check printTurn function when game is over "){
     Player p1("Alice");
     Player p2("Bob");
     Game game(p1,p2); 
     game.playAll();
-    // if(p1.stacksize()!=0 && p2.stacksize()!=0){
-    //     throw "the game isn't over!";
-    // }
-   // bool p1_stack=p1.stacksize() ==0;
-   // bool p2_stack=p2.stacksize()==0;
-    //CHECK( (p1_stack) && (p2_stack) ); // when the game is over , both players don't have any cards left.
-    CHECK((p1.stacksize() ==0 &&p2.stacksize()==0));
+  
+
     CHECK_THROWS(game.playTurn());// the game is over, can't do another turn
     
 
 }
 
 
-//     Player p1("Alice");
-//     Player p2("Bob");
-//     for (int i=0;i<20;i++) {
-//      CHECK(p1.stacksize() == 26);
-//    }
-    
-TEST_CASE("play a game "){
+TEST_CASE("check print functions after game starts"){
     Player p1("Alice");
     Player p2("Bob");
     Game game(p1,p2);
-    CHECK_THROWS(game.printStats());// there are no stats until the first turn!
-    CHECK_THROWS(game.printLog());//there is nothing to print here until the first turn!
-    CHECK_THROWS(game.printWiner()); // there is no winner at that point!
-    CHECK_NOTHROW(game.playTurn());
+    // CHECK_THROWS(game.printStats());// there are no stats until the first turn!
+    // CHECK_THROWS(game.printLog());//there is nothing to print here until the first turn!
+    // CHECK_THROWS(game.printWiner()); // there is no winner at that point!
+    CHECK_NOTHROW(game.playTurn()); 
+    CHECK_NOTHROW(game.printLastTurn()); 
     CHECK_NOTHROW(game.printStats()); // after first turn there are stats
     CHECK_NOTHROW(game.printLog()); //  after first turn there is log
     CHECK_THROWS(game.printWiner());  // there is no winner at that point!
     for(int i=0;i<5;i++){
         CHECK_NOTHROW( game.playTurn());
     }
-    CHECK_THROWS(game.printWiner());
+    CHECK_THROWS(game.printWiner()); // the game isn't over yet
     game.playAll();
     CHECK_NOTHROW(game.printWiner());
 
