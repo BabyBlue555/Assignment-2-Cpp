@@ -9,7 +9,7 @@ using namespace std;
 using namespace ariel;
 
 
-TEST_CASE("Test 1 - check stacksize and cardesTaken ") {
+TEST_CASE("check stacksize and cardesTaken ") {
     Player p1("Alice");
     Player p2("Bob");
 
