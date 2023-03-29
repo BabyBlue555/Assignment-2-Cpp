@@ -93,6 +93,8 @@ TEST_CASE("check print functions after game starts"){
     for(int i=0;i<5;i++){
         CHECK_NOTHROW( game.playTurn());
     }
+    CHECK(p1.stacksize()<=21);
+    CHECK(p2.stacksize()<=21);
     CHECK_THROWS(game.printWiner()); // the game isn't over yet
     // game.playAll();
     // CHECK_NOTHROW(game.printWiner()); // one of the players won
@@ -101,6 +103,8 @@ TEST_CASE("check print functions after game starts"){
 
 
 // end game has two cases - one of them wins / tie 
+// all the case tests before threw exception when calling printwiner(), this is the only case 
+// when somebody wins.
 TEST_CASE("one of the players wins"){
     Player p1("Alice");
     Player p2("Bob");
@@ -110,7 +114,8 @@ TEST_CASE("one of the players wins"){
 
 }
 
-// i did this case based on the answer i got in the forum.
+// i did this case based on the assumption that if nobody wins,printwiner() shouldn't print anything
+// and throw an exception 
 TEST_CASE("tie between the players"){
     Player p1("Alice");
     Player p2("Bob");
