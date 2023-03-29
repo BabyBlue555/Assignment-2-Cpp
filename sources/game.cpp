@@ -10,11 +10,12 @@ using namespace ariel;
 
 
 
-
-// "outline" constructor implementation:
-//  A(std::string& str_)
-   //  :    str(str_) {}
-   
+// inline constructor
+Game::Game(Player& plr1, Player& plr2)
+: p1(plr1), p2(plr2) {   
+        this->p1 = plr1;
+        this->p2 = plr2;;
+     }
 
 // "outline" method implementation:
 void Game::printLastTurn(){
